@@ -14,13 +14,15 @@ def pyping():
 				count = int(sys.argv[i+1])
 			elif sys.argv[i] == "-t":
 				timeout = float(sys.argv[i+1])
+			elif sys.argv[i] == "-i":
+				interval = float(sys.argv[i+1])
 			else:
 				pass
 	except:
 		usage()
 	"""need more option"""
 	
-	doping(dest, count, timeout)
+	doping(dest, count, timeout, interval)
 	
 def usage():
 	print "Usage:"
@@ -29,18 +31,19 @@ def usage():
 	print "\tExample: pyping www.google.com -t 2"
 	exit()
 
-def doping(dest, count, timeout):
+def doping(dest, count, timeout, interval):
 
 	host = resolve_host(dest)  # get the IP
 
 	PID = os.getpid()
-	packet = packIcmp(host, PID)   # pack the pakcet
-	
 	sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, 1) # get the socket, 1 is the protocol number
 	if count == 0:
 		count = 65535 
+	print "Pinging start!"
 	for i in xrange(count):
-		print "Pinging ",dest," attempts ",i,
+		time.sleep(interval)
+		packet = packIcmp(host, PID)   # pack the pakcet
+		print "Pinging",dest,"attempts",i+1,
 		sock.sendto(packet, (host,1))          #send the packet
 		result = recvicmp(sock, PID, timeout)    #receive the ICMP reply 
 		if result == 0:
