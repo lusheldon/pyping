@@ -5,6 +5,7 @@ import os, sys, socket, struct, select, time
 def pyping():
 	count=0		#default value
 	timeout=4
+	interval = 0.5
 	if len(sys.argv)==1:
 		usage()
 	dest = sys.argv[1]
@@ -40,16 +41,20 @@ def doping(dest, count, timeout, interval):
 	if count == 0:
 		count = 65535 
 	print "Pinging start!"
-	for i in xrange(count):
-		time.sleep(interval)
-		packet = packIcmp(host, PID)   # pack the pakcet
-		print "Pinging",dest,"attempts",i+1,
-		sock.sendto(packet, (host,1))          #send the packet
-		result = recvicmp(sock, PID, timeout)    #receive the ICMP reply 
-		if result == 0:
-			print "get reply timeout!"
-		else:
-			print "get reply in ",result, "ms"
+	try:
+		for i in xrange(count):
+			time.sleep(interval)
+			packet = packIcmp(host, PID)   # pack the pakcet
+			print "Pinging",dest,"attempts",i+1,
+			sock.sendto(packet, (host,1))          #send the packet
+			result = recvicmp(sock, PID, timeout)    #receive the ICMP reply 
+			if result == 0:
+				print "get reply timeout!"
+			else:
+				print "get reply in ",result, "ms"
+	except KeyboardInterrupt:
+		print "\n\rInterrupted by Keyboard!"
+		exit()
 def recvicmp(sock, PID, timeout):
 	while True:
 		clockStart = time.time()
