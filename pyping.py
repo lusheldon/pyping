@@ -1,5 +1,7 @@
 #!/usr/bin/python
 #--*-- coding: utf-8 --*--
+# This is a simple ping tool based on python. It is a python exercise.
+# author: lusheldon
 import os, sys, socket, struct, select, time
 
 def pyping():
